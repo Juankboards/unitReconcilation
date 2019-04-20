@@ -1,9 +1,15 @@
 const Records = require('./Records.js')
 
 const ReconParser = () => {
-  let initialValues = false
+  let initialValues = false //check if registering records from D0-POS or D1-POS
   let records = Records()
 
+  /*
+  called when no space on line
+    D0-POS
+    D1-TRN
+    D1-POS
+  */
   const parseSection = (lineValues) => {
     initialValues = false
     const [day, registerType] = lineValues[0].split('-')
@@ -12,6 +18,10 @@ const ReconParser = () => {
     return { type: 'section', values: [day, registerType] }
   }
 
+  /*
+  called when 1 space on line
+    SYMBOL SHARES
+  */
   const parsePositionRecord = (lineValues) => {
     const [symbol, shares] = lineValues
     if (initialValues) records.addInitialRecord(symbol, shares)
@@ -19,6 +29,10 @@ const ReconParser = () => {
     return { type: 'position', values: [symbol, shares] }
   }
 
+  /*
+  called when 3 space on line
+    SYMBOL TRANSACTION SHARES VALUE
+  */
   const parseTransactionRecord = (lineValues) => {
     const [symbol, transactionType, shares, value] = lineValues
     records.processTransaction(symbol, transactionType, shares, value)

@@ -10,6 +10,9 @@ async function reconOutGenerator (path) {
   }
 }
 
+/*
+write on recon.out the unit reconciliation report
+*/
 function writeOutput (path) {
   const output = fs.createWriteStream('./recon.out')
 

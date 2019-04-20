@@ -1,9 +1,9 @@
 const BigNumber = require('bignumber.js')
 
 const Records = () => {
-  let records = {}
-  let unitReconcilation = new Map()
-  let initialRecords = new Set()
+  let records = {} //store the expected final state
+  let unitReconcilation = new Map() //store the unit reconciliation fails
+  let initialRecords = new Set() //keep track of shares on records not found on D1-POS
 
   const registerUnitReconcilation = (symbol, shares, prevPos) => {
     const newShareValue = prevPos.multipliedBy(-1).plus(shares)
@@ -19,17 +19,26 @@ const Records = () => {
     getRecords () {
       return Object.assign({}, records)
     },
+    /*
+    add record from D0-POS to records
+    */
     addInitialRecord (symbol, shares) {
       if (!symbol || shares === undefined) return false
       records[symbol] = +shares
       return true
     },
+    /*
+    register difference between D1-POS and records on unitReconcilation
+    */
     unitReconcilationCheck (symbol, shares) {
       const prevPos = parseSharesValue(symbol)
       registerUnitReconcilation(symbol, shares, prevPos)
       initialRecords.delete(symbol)
       return [symbol, unitReconcilation.get(symbol) || 0]
     },
+    /*
+    process D1-TRN
+    */
     processTransaction (symbol, transactionType, shares, value) {
       if (!symbol || !transactionType || shares === undefined || value === undefined) return false
 
@@ -43,10 +52,16 @@ const Records = () => {
 
       return true
     },
+    /*
+    keep track of shares registered on records
+    */
     observeInitialRecords () {
       initialRecords = new Set(Object.keys(records))
       return true
     },
+    /*
+    register the error of shares not registered on D1-TRN or D1-POS and return unitReconcilation
+    */
     unitReconcilationReport () {
       for (const symbol of initialRecords) {
         const shares = new BigNumber(0)

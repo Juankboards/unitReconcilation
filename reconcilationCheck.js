@@ -10,6 +10,9 @@ async function reconcilationCheck (path) {
   }
 }
 
+/*
+read recon.in as stream
+*/
 function generateUnitReconcilationReport (path) {
   const reconParser = ReconParser()
   const input = fs.createReadStream(path)
