@@ -1,7 +1,7 @@
 const Records = require('./Records.js')
 
 const ReconParser = () => {
-  let initialValues = false //check if registering records from D0-POS or D1-POS
+  let initialValues = false // check if registering records from D0-POS or D1-POS
   let records = Records()
 
   /*

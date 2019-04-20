@@ -1,9 +1,9 @@
 const BigNumber = require('bignumber.js')
 
 const Records = () => {
-  let records = {} //store the expected final state
-  let unitReconcilation = new Map() //store the unit reconciliation fails
-  let initialRecords = new Set() //keep track of shares on records not found on D1-POS
+  let records = {} // store the expected final state
+  let unitReconcilation = new Map() // store the unit reconciliation fails
+  let initialRecords = new Set() // keep track of shares on records not found on D1-POS
 
   const registerUnitReconcilation = (symbol, shares, prevPos) => {
     const newShareValue = prevPos.multipliedBy(-1).plus(shares)
